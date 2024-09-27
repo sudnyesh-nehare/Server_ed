@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal 3D Tech Hub</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: 'Arial', sans-serif; background-color: #000; color: #fff; }
+        #info {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            pointer-events: none;
+            color: #fff;
+        }
+        .panel {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 300px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            border: 1px solid #fff;
+        }
+        .panel h2 { margin-top: 0; color: #fff; }
+        #objectives { top: 70px; left: 20px; }
+        #methodology { top: 70px; right: 20px; }
+        #outcomes { bottom: 20px; left: 20px; }
+        #future { bottom: 20px; right: 20px; }
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 1px solid #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div id="info">Minimal 3D Tech Hub</div>
+    <div id="objectives" class="panel">
+        <h2>Objectives</h2>
+        <ul>
+            <li>Revolutionize offline education</li>
+            <li>Enhance focus and engagement</li>
+            <li>Bridge the digital divide</li>
+            <li>Empower educators with cutting-edge tools</li>
+        </ul>
+    </div>
+    <div id="methodology" class="panel">
+        <h2>Methodology</h2>
+        <ul>
+            <li>Advanced local server architecture</li>
+            <li>AI-powered content delivery</li>
+            <li>Adaptive learning algorithms</li>
+            <li>Minimalistic design focus</li>
+        </ul>
+    </div>
+    <div id="outcomes" class="panel">
+        <h2>Expected Outcomes</h2>
+        <ul>
+            <li>Increase in learning efficiency</li>
+            <li>Universal access to education</li>
+            <li>Personalized learning experiences</li>
+            <li>Cultivation of future-ready skills</li>
+        </ul>
+    </div>
+    <div id="future" class="panel">
+        <h2>Future Innovations</h2>
+        <ul>
+            <li>Quantum computing integration</li>
+            <li>Neural interface for knowledge transfer</li>
+            <li>Global offline educational network</li>
+            <li>Immersive VR learning environments</li>
+        </ul>
+    </div>
+    <div id="controls">
+        <button class="btn" id="toggleHologram">Toggle Hologram</button>
+        <button class="btn" id="showModules">Show Modules</button>
+    </div>
+    <script>
+        // Set up scene
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000);
+        document.body.appendChild(renderer.domElement);
+
+        // Create central core (minimalistic)
+        const coreGeometry = new THREE.IcosahedronGeometry(1, 2);
+        const coreMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.7
+        });
+        const core = new THREE.Mesh(coreGeometry, coreMaterial);
+        scene.add(core);
+
+        // Create data streams (minimalistic)
+        const streamCount = 20;
+        const streams = [];
+        for (let i = 0; i < streamCount; i++) {
+            const streamGeometry = new THREE.TubeGeometry(
+                new THREE.CatmullRomCurve3([
+                    new THREE.Vector3(0, 0, 0),
+                    new THREE.Vector3(
+                        (Math.random() - 0.5) * 4,
+                        (Math.random() - 0.5) * 4,
+                        (Math.random() - 0.5) * 4
+                    )
+                ]),
+                20, 0.02, 8, false
+            );
+            const streamMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.3
+            });
+            const stream = new THREE.Mesh(streamGeometry, streamMaterial);
+            streams.push(stream);
+            scene.add(stream);
+        }
+
+        // Create learning modules (minimalistic)
+        const moduleTypes = [
+            { name: 'AI', geometry: new THREE.OctahedronGeometry(0.2, 0) },
+            { name: 'VR', geometry: new THREE.DodecahedronGeometry(0.2, 0) },
+            { name: 'Quantum', geometry: new THREE.TetrahedronGeometry(0.2, 0) },
+            { name: 'Neural', geometry: new THREE.TorusKnotGeometry(0.1, 0.05, 64, 8) }
+        ];
+
+        const modules = [];
+        for (let i = 0; i < 15; i++) {
+            const type = moduleTypes[Math.floor(Math.random() * moduleTypes.length)];
+            const moduleMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.8
+            });
+            const module = new THREE.Mesh(type.geometry, moduleMaterial);
+            
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            const radius = 2 + Math.random();
+            module.position.setFromSpherical(new THREE.Spherical(radius, phi, theta));
+            modules.push(module);
+            scene.add(module);
+        }
+
+        // Add ambient light (minimalistic)
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+
+        camera.position.z = 5;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            core.rotation.x += 0.005;
+            core.rotation.y += 0.005;
+
+            streams.forEach(stream => {
+                stream.rotation.x += 0.01;
+                stream.rotation.y += 0.01;
+            });
+
+            modules.forEach(module => {
+                module.rotation.x += 0.01;
+                module.rotation.y += 0.01;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Interactive elements
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        function onMouseMove(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(modules);
+
+            if (intersects.length > 0) {
+                const intersected = intersects[0].object;
+                gsap.to(intersected.scale, { x: 1.5, y: 1.5, z: 1.5, duration: 0.3 });
+                document.body.style.cursor = 'pointer';
+            } else {
+                modules.forEach(module => {
+                    gsap.to(module.scale, { x: 1, y: 1, z: 1, duration: 0.3 });
+                });
+                document.body.style.cursor = 'default';
+            }
+        }
+
+        window.addEventListener('mousemove', onMouseMove);
+
+        // Show/hide info panels
+        let currentPanel = null;
+
+        function showPanel(panelId) {
+            if (currentPanel) {
+                currentPanel.style.opacity = 0;
+            }
+            const panel = document.getElementById(panelId);
+            panel.style.opacity = 1;
+            currentPanel = panel;
+        }
+
+        window.addEventListener('click', () => {
+            const panels = ['objectives', 'methodology', 'outcomes', 'future'];
+            const randomPanel = panels[Math.floor(Math.random() * panels.length)];
+            showPanel(randomPanel);
+        });
+
+        // Toggle hologram visibility
+        let hologramVisible = true;
+        document.getElementById('toggleHologram').addEventListener('click', () => {
+            hologramVisible = !hologramVisible;
+            gsap.to(core.material, { opacity: hologramVisible ? 0.7 : 0, duration: 0.5 });
+            streams.forEach(stream => {
+                gsap.to(stream.material, { opacity: hologramVisible ? 0.3 : 0, duration: 0.5 });
+            });
+        });
+
+        // Show/hide modules
+        let modulesVisible = true;
+        document.getElementById('showModules').addEventListener('click', () => {
+            modulesVisible = !modulesVisible;
+            modules.forEach(module => {
+                gsap.to(module.material, { opacity: modulesVisible ? 0.8 : 0, duration: 0.5 });
+            });
+            document.getElementById('showModules').textContent = modulesVisible ? 'Hide Modules' : 'Show Modules';
+        });
+    </script>
+</body>
+</html>
+
